@@ -21,6 +21,15 @@ public class ZoomApiIntegration {
     @Autowired
     private  WebClient webClient;
 
+    public String callCodeApi() {
+
+        String zoomUrl ="https://zoom.us/oauth/authorize?response_type=code&client_id={clientId}&redirect_uri={redirectUrl}";
+        zoomUrl = zoomUrl.replace("{clientId}", applicationProperties.getClientId());
+        zoomUrl = zoomUrl.replace("{redirectUrl}", applicationProperties.getRedirectUrl());
+
+        return zoomUrl;
+    }
+
     public AuthDTO callTokenApi(String oAuthToken) {
 
         String originalString = applicationProperties.getClientId() + ":" + applicationProperties.getClientSecret();
@@ -37,9 +46,9 @@ public class ZoomApiIntegration {
                 .exchange()
                 .block();
 
-        if (clientResponse.statusCode().isError()) {
-            throw new ResourceNotFoundException("Failed to generate token.");
-        }
+//        if (clientResponse.statusCode().isError()) {
+//            throw new ResourceNotFoundException("Failed to generate token.");
+//        }
 
         Mono<AuthDTO> tokenResponseMono = clientResponse.bodyToMono(AuthDTO.class);
         AuthDTO newTokenResponse = tokenResponseMono.block();

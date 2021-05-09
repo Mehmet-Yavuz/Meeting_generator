@@ -1,6 +1,8 @@
 package be.pxl.rp_backend.dto;
 
-public class AuthDTO {
+import java.io.Serializable;
+
+public class AuthDTO implements Serializable {
 
     private String access_token;
     private String token_type;

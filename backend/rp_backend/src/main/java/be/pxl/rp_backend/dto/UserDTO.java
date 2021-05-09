@@ -6,9 +6,9 @@ public class UserDTO {
     private String first_name;
     private String last_name;
     private String email;
-    private int type;
+    private long type;
     private String role_name;
-    private int pmi;
+    private long pmi;
     private boolean use_pmi;
     private String timezone;
     private String dept;
@@ -21,7 +21,7 @@ public class UserDTO {
     private Object phone_numbers;
     private String vanity_url;
     private String personal_meeting_url;
-    private int verified;
+    private long verified;
     private String pic_url;
     private String cms_user_id;
     private String account_id;
@@ -34,7 +34,7 @@ public class UserDTO {
     private String company;
     private String location;
     private Object custom_attributes;
-    private int login_type;
+    private long login_type;
     private String role_id;
     private String plan_united_type;
     private String manager;
@@ -75,11 +75,11 @@ public class UserDTO {
         this.email = email;
     }
 
-    public int getType() {
+    public long getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(long type) {
         this.type = type;
     }
 
@@ -91,11 +91,11 @@ public class UserDTO {
         this.role_name = role_name;
     }
 
-    public int getPmi() {
+    public long getPmi() {
         return pmi;
     }
 
-    public void setPmi(int pmi) {
+    public void setPmi(long pmi) {
         this.pmi = pmi;
     }
 
@@ -195,11 +195,11 @@ public class UserDTO {
         this.personal_meeting_url = personal_meeting_url;
     }
 
-    public int getVerified() {
+    public long getVerified() {
         return verified;
     }
 
-    public void setVerified(int verified) {
+    public void setVerified(long verified) {
         this.verified = verified;
     }
 
@@ -299,11 +299,11 @@ public class UserDTO {
         this.custom_attributes = custom_attributes;
     }
 
-    public int getLogin_type() {
+    public long getLogin_type() {
         return login_type;
     }
 
-    public void setLogin_type(int login_type) {
+    public void setLogin_type(long login_type) {
         this.login_type = login_type;
     }
 

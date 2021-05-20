@@ -7,13 +7,17 @@ import { NavbarComponent } from './core/navbar/navbar.component';
 import { CreateMeetingComponent } from './feature/create-meeting/create-meeting.component';
 import { LoginComponent } from './core/login/login.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ViewUserComponent } from './feature/view-user/view-user.component';
+import { ViewMeetingsComponent } from './feature/view-meetings/view-meetings.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     CreateMeetingComponent,
-    LoginComponent
+    LoginComponent,
+    ViewUserComponent,
+    ViewMeetingsComponent
   ],
   imports: [
     BrowserModule,

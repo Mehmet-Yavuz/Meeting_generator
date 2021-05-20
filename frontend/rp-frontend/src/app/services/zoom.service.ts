@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { User } from '../models/user.model';
 import { AccessToken } from '../models/accessToken.model';
 
 @Injectable({
@@ -14,8 +12,11 @@ export class ZoomService {
 
   constructor(private http: HttpClient) { }
 
-  getAccessToken(code:string): Observable<AccessToken>{
-     return this.http.get<AccessToken>(this.url+'/api/access-token/' + code);
+  getAccessToken(code:string): string{
+      this.http.get<AccessToken>(this.url+'/api/access-token/' + code).subscribe(data =>{
+        console.log(data);
+      });
+      return 'null';
   }
 
 }

@@ -1,11 +1,7 @@
 <div class="text-center mt-5">
-    <button type="button" class="btn btn-info" (click)="redirect()" *ngIf="!loggedIn">Login with Zoom</button>
-    <div class="card" style="width: 18rem;" *ngIf="loggedIn">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div>
+  <div class="jumbotron">
+    <h1 class="display-4" *ngIf="!loggedIn">Please login using the button in navigation bar</h1>
+    <h1 class="display-4" *ngIf="loggedIn">Welcome!</h1>
+    <p class="lead" *ngIf="loggedIn">You have succesfully logged in, from here on out you can navigate to your personal information and view or create meetings.</p>
+  </div>
 </div>

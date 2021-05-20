@@ -1,8 +1,8 @@
 package be.pxl.rp_backend;
 
 import be.pxl.rp_backend.dto.AuthDTO;
+import be.pxl.rp_backend.dto.MeetingDTO;
 import be.pxl.rp_backend.dto.UserDTO;
-import be.pxl.rp_backend.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
@@ -21,17 +21,7 @@ public class ZoomApiIntegration {
     @Autowired
     private  WebClient webClient;
 
-    public String callCodeApi() {
-
-        String zoomUrl ="https://zoom.us/oauth/authorize?response_type=code&client_id={clientId}&redirect_uri={redirectUrl}";
-        zoomUrl = zoomUrl.replace("{clientId}", applicationProperties.getClientId());
-        zoomUrl = zoomUrl.replace("{redirectUrl}", applicationProperties.getRedirectUrl());
-
-        return zoomUrl;
-    }
-
     public AuthDTO callTokenApi(String oAuthToken) {
-
         String originalString = applicationProperties.getClientId() + ":" + applicationProperties.getClientSecret();
 
         String authorizationToken = "Basic " + Base64.getEncoder().encodeToString(originalString.getBytes());
@@ -45,10 +35,6 @@ public class ZoomApiIntegration {
                 .header(HttpHeaders.AUTHORIZATION, authorizationToken)
                 .exchange()
                 .block();
-
-//        if (clientResponse.statusCode().isError()) {
-//            throw new ResourceNotFoundException("Failed to generate token.");
-//        }
 
         Mono<AuthDTO> tokenResponseMono = clientResponse.bodyToMono(AuthDTO.class);
         AuthDTO newTokenResponse = tokenResponseMono.block();
@@ -69,5 +55,23 @@ public class ZoomApiIntegration {
         UserDTO newPersonalDetailsResponse = personalDetailsResponseMono.block();
 
         return newPersonalDetailsResponse;
+    }
+
+    public MeetingDTO callMeetingApi(String accessToken) {
+        String authorizationToken = "Bearer " + accessToken;
+
+        String userZoomDetailsUrl = "https://api.zoom.us/v2/users/me/";
+        String meetingZoomUrl = "https://api.zoom.us/v2/meetings/";
+
+        ClientResponse clientResponse = webClient.get()
+                .uri(meetingZoomUrl)
+                .header(HttpHeaders.AUTHORIZATION, authorizationToken)
+                .exchange()
+                .block();
+
+        Mono<MeetingDTO> meetingResponseMono = clientResponse.bodyToMono(MeetingDTO.class);
+        MeetingDTO newMeetingResponse = meetingResponseMono.block();
+
+        return newMeetingResponse;
     }
 }

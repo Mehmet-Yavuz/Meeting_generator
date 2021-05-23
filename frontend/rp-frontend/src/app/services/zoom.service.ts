@@ -12,11 +12,19 @@ export class ZoomService {
 
   constructor(private http: HttpClient) { }
 
-  getAccessToken(code:string): string{
-      this.http.get<AccessToken>(this.url+'/api/access-token/' + code).subscribe(data =>{
-        console.log(data);
-      });
-      return 'null';
+  getAccessToken(code:string) {
+    return this.http.get(this.url+'/api/access-token/' + code);
   }
 
+  getUserDetails(accessToken:string) {
+    return this.http.get(this.url+'/user/me/' + accessToken);
+  }
+
+  getMeetingDetails(accessToken:string) {
+    return this.http.get(this.url+'/meeting/scheduled/' + accessToken);
+  }
+
+  createMeeting(meeting:any, accessToken:string) {
+    return this.http.post(this.url+'/meeting/create/' + accessToken, meeting);
+  }
 }

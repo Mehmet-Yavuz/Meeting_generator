@@ -1,2 +1,153 @@
-<app-navbar></app-navbar>
-<router-outlet></router-outlet>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand">Meeting Generator</a>
+    <button
+      type="button"
+      class="btn btn-info"
+      (click)="redirect()"
+      *ngIf="!loggedIn"
+    >
+      Login with Zoom
+    </button>
+  </div>
+</nav>
+
+<div class="text-center mt-5">
+  <div class="jumbotron">
+    <h1 class="display-4" *ngIf="!loggedIn">
+      Please login using the button above
+    </h1>
+    <h1 class="display-4" *ngIf="loggedIn">Welcome!</h1>
+    <p class="lead" *ngIf="loggedIn">
+      You have succesfully logged in, from here on out you can navigate to your
+      personal information and view or create meetings.
+    </p>
+    <hr class="my-2" *ngIf="loggedIn" />
+  </div>
+</div>
+
+<div class="mt-2" *ngIf="loggedIn">
+  <h3>Personal information</h3>
+  <div class="mx-auto p-3 w-50"
+  *ngIf="loggedIn && !bodyNotNull">
+    <button
+    type="button"
+    class="btn btn-primary"
+    (click)="retrieveUserInfo()"
+  >
+    Get info
+  </button>
+  </div>
+  <div class="container" *ngIf="bodyNotNull">
+    <div class="info">
+      <img [src]="body.pic_url" alt="User photo" />
+      <div>
+        <span>Welcome</span>
+        <h2>{{ body.first_name }} {{ body.last_name }}</h2>
+        <p>{{ body.role_name }}, {{ body.company }}</p>
+      </div>
+    </div>
+    <div class="response">
+      <h4>JSON Response:</h4>
+      <pre><code>{{ JSONResponse }}</code></pre>
+    </div>
+  </div>
+</div>
+
+<div class="mt-2" *ngIf="loggedIn">
+  <h3>My meetings</h3>
+  <div class="mx-auto p-3 w-50"
+  *ngIf="loggedIn && !meetingsNotNull">
+    <button
+    type="button"
+    class="btn btn-primary"
+    (click)="retrieveMeetingInfo()"
+  >
+    Get meetings
+  </button>
+  </div>
+  <div class="container" *ngIf="meetingsNotNull">
+    <div class="response">
+      <h4>JSON Response:</h4>
+      <pre><code>{{ meetingsJSONResponse }}</code></pre>
+    </div>
+  </div>
+</div>
+
+<div class="mt-2" *ngIf="loggedIn">
+  <h3>New meeting</h3>
+  <div class="mx-auto p-3 w-50">
+    
+  <form [formGroup]="form" (ngSubmit)="createMeeting(form)" *ngIf="loggedIn && !meetingNotNull">
+    <div class="mb-3">
+      <label for="topic" class="form-label"
+        >Topic</label
+      >
+      <input formControlName="topic" name="topic"
+        type="text"
+        maxlength=""
+        class="form-control"
+        id="topic"
+        placeholder="API explanation"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label"
+        >Description (optional)</label
+      >
+      <textarea formControlName="description" name="description"
+        class="form-control"
+        id="description"
+        rows="3"
+        placeholder="In this meeting we will discuss the Zoom API and how we should correctly integrate it into our webapp"
+      ></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="when" class="form-label"
+        >When</label
+      >
+      <input formControlName="when1" name="when1"
+        type="date"
+        class="form-control"
+        id="when1"
+      />
+      <input formControlName="when2" name="when2"
+        type="time"
+        class="form-control"
+        id="when2"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="duration" class="form-label"
+        >Duration</label
+      >
+      <input formControlName="duration" name="duration"
+        type="number"
+        class="form-control"
+        id="duration"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="security" class="form-label"
+        >Password</label
+      >
+      <input formControlName="security" name="security"
+        type="password"
+        class="form-control"
+        id="security"
+      />
+    </div>
+    <button [disabled]="form.invalid"
+      role="button"
+      type="submit"
+      class="btn btn-primary"
+    >
+      Create meeting
+    </button>
+  </form>
+  <div class="response" *ngIf="meetingNotNull">
+    <h4>JSON Response:</h4>
+    <pre><code>{{ meetingJSONResponse }}</code></pre>
+  </div>
+  </div>
+</div>

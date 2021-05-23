@@ -1,10 +1,9 @@
 package be.pxl.rp_backend;
 
-import be.pxl.rp_backend.dto.AuthDTO;
-import be.pxl.rp_backend.dto.MeetingDTO;
-import be.pxl.rp_backend.dto.UserDTO;
+import be.pxl.rp_backend.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -26,7 +25,7 @@ public class ZoomApiIntegration {
 
         String authorizationToken = "Basic " + Base64.getEncoder().encodeToString(originalString.getBytes());
 
-        String zoomUrl ="https://api.zoom.us/oauth/token?grant_type=authorization_code&code={oAuthCode}&redirect_uri={redirectUrl}";
+        String zoomUrl ="/oauth/token?grant_type=authorization_code&code={oAuthCode}&redirect_uri={redirectUrl}";
         zoomUrl = zoomUrl.replace("{oAuthCode}", oAuthToken);
         zoomUrl = zoomUrl.replace("{redirectUrl}", applicationProperties.getRedirectUrl());
 
@@ -44,7 +43,7 @@ public class ZoomApiIntegration {
     public UserDTO callCurrentUserApi(String accessToken) {
         String authorizationToken = "Bearer " + accessToken;
 
-        String userZoomDetailsUrl = "https://api.zoom.us/v2/users/me/";
+        String userZoomDetailsUrl = "/v2/users/me/";
         ClientResponse clientResponse = webClient.get()
                 .uri(userZoomDetailsUrl)
                 .header(HttpHeaders.AUTHORIZATION, authorizationToken)
@@ -57,21 +56,43 @@ public class ZoomApiIntegration {
         return newPersonalDetailsResponse;
     }
 
-    public MeetingDTO callMeetingApi(String accessToken) {
+    public MeetingListDTO callMeetingApi(String accessToken) {
         String authorizationToken = "Bearer " + accessToken;
 
-        String userZoomDetailsUrl = "https://api.zoom.us/v2/users/me/";
-        String meetingZoomUrl = "https://api.zoom.us/v2/meetings/";
+        String meetingsZoomDetailsUrl = "/v2/users/me/meetings";
 
         ClientResponse clientResponse = webClient.get()
-                .uri(meetingZoomUrl)
+                .uri(uriBuilder ->  uriBuilder.path(meetingsZoomDetailsUrl)
+                        .queryParam("type","scheduled")
+                        .queryParam("page_size","30")
+                        .queryParam("next_page_token","")
+                        .queryParam("page_number","").build())
                 .header(HttpHeaders.AUTHORIZATION, authorizationToken)
                 .exchange()
                 .block();
 
-        Mono<MeetingDTO> meetingResponseMono = clientResponse.bodyToMono(MeetingDTO.class);
-        MeetingDTO newMeetingResponse = meetingResponseMono.block();
+        Mono<MeetingListDTO> meetingResponseMono = clientResponse.bodyToMono(MeetingListDTO.class);
+        MeetingListDTO newMeetingResponse = meetingResponseMono.block();
 
         return newMeetingResponse;
+    }
+
+    public MeetingDTO callCreateMeetingApi(PostMeetingDTO meeting, String accessToken) {
+        String authorizationToken = "Bearer " + accessToken;
+
+        String meetingsZoomDetailsUrl = "/v2/users/me/meetings";
+
+        ClientResponse clientResponse = webClient.post()
+                .uri(meetingsZoomDetailsUrl)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, authorizationToken)
+                .body(Mono.just(meeting), PostMeetingDTO.class)
+                .exchange()
+                .block();
+
+        Mono<MeetingDTO> meetingResponseMono = clientResponse.bodyToMono(MeetingDTO.class);
+        MeetingDTO createMeetingResponse = meetingResponseMono.block();
+
+        return createMeetingResponse;
     }
 }

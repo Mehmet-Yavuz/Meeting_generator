@@ -4,7 +4,7 @@ package be.pxl.rp_backend.dto;
 public class MeetingDTO {
 
     private String uuid;
-    private int id;
+    private long id;
     private String host_id;
     private String assistant_id;
     private String host_email;
@@ -21,7 +21,7 @@ public class MeetingDTO {
     private String password;
     private String h323_password;
     private String encrypted_password;
-    private int pmi;
+    private long pmi;
     private Object[] tracking_fields;
     private Object[] occurrences;
     private Object setting;
@@ -39,11 +39,11 @@ public class MeetingDTO {
         this.uuid = uuid;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -175,11 +175,11 @@ public class MeetingDTO {
         this.encrypted_password = encrypted_password;
     }
 
-    public int getPmi() {
+    public long getPmi() {
         return pmi;
     }
 
-    public void setPmi(int pmi) {
+    public void setPmi(long pmi) {
         this.pmi = pmi;
     }
 

@@ -21,7 +21,7 @@ public class RpBackendApplication {
 
 	@Bean
 	public WebClient getWebClient() {
-		return (WebClient.builder().build());
+		return (WebClient.builder().baseUrl("https://api.zoom.us").build());
 	}
 
 	@Bean
@@ -34,7 +34,6 @@ public class RpBackendApplication {
 		config.addAllowedOrigin(applicationProperties.getRedirectUrl());
 		config.addAllowedHeader("*");
 
-		config.addExposedHeader("WWW-Authenticate");
 		config.addExposedHeader("Access-Control-Allow-Origin");
 		config.addExposedHeader("Access-Control-Allow-Headers");
 

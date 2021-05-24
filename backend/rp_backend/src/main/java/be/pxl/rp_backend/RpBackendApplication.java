@@ -21,7 +21,7 @@ public class RpBackendApplication {
 
 	@Bean
 	public WebClient getWebClient() {
-		return (WebClient.builder().baseUrl("https://api.zoom.us").build());
+		return (WebClient.builder().baseUrl(applicationProperties.getZoomBaseUrl()).build());
 	}
 
 	@Bean

@@ -18,34 +18,34 @@ public class ZoomApiIntegration {
     private ApplicationProperties applicationProperties;
 
     @Autowired
-    private  WebClient webClient;
+    private WebClient webClient;
 
     public AuthDTO callTokenApi(String oAuthToken) {
         String originalString = applicationProperties.getClientId() + ":" + applicationProperties.getClientSecret();
 
         String authorizationToken = "Basic " + Base64.getEncoder().encodeToString(originalString.getBytes());
 
-        String zoomUrl ="/oauth/token?grant_type=authorization_code&code={oAuthCode}&redirect_uri={redirectUrl}";
-        zoomUrl = zoomUrl.replace("{oAuthCode}", oAuthToken);
-        zoomUrl = zoomUrl.replace("{redirectUrl}", applicationProperties.getRedirectUrl());
+        String zoomOathUrl = applicationProperties.getZoomOauthPath();
+        zoomOathUrl = zoomOathUrl.replace("{oAuthCode}", oAuthToken);
+        zoomOathUrl = zoomOathUrl.replace("{redirectUrl}", applicationProperties.getRedirectUrl());
 
         ClientResponse clientResponse = webClient.post()
-                .uri(zoomUrl)
+                .uri(zoomOathUrl)
                 .header(HttpHeaders.AUTHORIZATION, authorizationToken)
                 .exchange()
                 .block();
 
         Mono<AuthDTO> tokenResponseMono = clientResponse.bodyToMono(AuthDTO.class);
         AuthDTO newTokenResponse = tokenResponseMono.block();
+
         return newTokenResponse;
     }
 
     public UserDTO callCurrentUserApi(String accessToken) {
         String authorizationToken = "Bearer " + accessToken;
 
-        String userZoomDetailsUrl = "/v2/users/me/";
         ClientResponse clientResponse = webClient.get()
-                .uri(userZoomDetailsUrl)
+                .uri(applicationProperties.getZoomUserPath())
                 .header(HttpHeaders.AUTHORIZATION, authorizationToken)
                 .exchange()
                 .block();
@@ -59,10 +59,8 @@ public class ZoomApiIntegration {
     public MeetingListDTO callMeetingApi(String accessToken) {
         String authorizationToken = "Bearer " + accessToken;
 
-        String meetingsZoomDetailsUrl = "/v2/users/me/meetings";
-
         ClientResponse clientResponse = webClient.get()
-                .uri(uriBuilder ->  uriBuilder.path(meetingsZoomDetailsUrl)
+                .uri(uriBuilder ->  uriBuilder.path(applicationProperties.getZoomMeetingPath())
                         .queryParam("type","scheduled")
                         .queryParam("page_size","30")
                         .queryParam("next_page_token","")
@@ -80,10 +78,8 @@ public class ZoomApiIntegration {
     public MeetingDTO callCreateMeetingApi(PostMeetingDTO meeting, String accessToken) {
         String authorizationToken = "Bearer " + accessToken;
 
-        String meetingsZoomDetailsUrl = "/v2/users/me/meetings";
-
         ClientResponse clientResponse = webClient.post()
-                .uri(meetingsZoomDetailsUrl)
+                .uri(applicationProperties.getZoomMeetingPath())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, authorizationToken)
                 .body(Mono.just(meeting), PostMeetingDTO.class)
